@@ -1,0 +1,5 @@
+auth:
+  ignore_urls:
+    - /api/**
+    - /jmreport/**
+    - /file-storage/attachment/**

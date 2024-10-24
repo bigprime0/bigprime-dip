@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "noImplicitAny": false
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}

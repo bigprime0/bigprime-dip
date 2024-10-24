@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.bigprime</groupId>
+        <artifactId>bigprime-data</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>bigprime-plugin-manager</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-source-spi</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-mysql</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-doris</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-redis</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-clickhouse</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-dm</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-hive</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-oracle</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-postgresql</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-sqlserver</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-jdbc-mongo</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-native-redis</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-native-kafka</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-native-zookeeper</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bigprime</groupId>
+            <artifactId>bigprime-http-clickhouse</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</project>

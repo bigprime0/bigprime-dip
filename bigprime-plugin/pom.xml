@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.bigprime</groupId>
+        <artifactId>bigprime-data</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>bigprime-plugin</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>source/http/bigprime-http-clickhouse</module>
+        <module>source/native/bigprime-native-redis</module>
+        <module>source/native/bigprime-native-kafka</module>
+        <module>source/native/bigprime-native-zookeeper</module>
+        <module>source/jdbc/bigprime-jdbc-mysql</module>
+        <module>source/jdbc/bigprime-jdbc-doris</module>
+        <module>source/jdbc/bigprime-jdbc-redis</module>
+        <module>source/jdbc/bigprime-jdbc-oracle</module>
+        <module>source/jdbc/bigprime-jdbc-postgresql</module>
+        <module>source/jdbc/bigprime-jdbc-sqlserver</module>
+        <module>source/jdbc/bigprime-jdbc-dm</module>
+        <module>source/jdbc/bigprime-jdbc-clickhouse</module>
+        <module>source/jdbc/bigprime-jdbc-hive</module>
+        <module>source/jdbc/bigprime-jdbc-mongo</module>
+    </modules>
+</project>
