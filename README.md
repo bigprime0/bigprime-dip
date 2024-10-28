@@ -97,6 +97,7 @@ Data Integration Platform 是 Bigprime DGP 大数据治理平台中的一个核�
 
 **启动前端**
 - **bigprime-ui项目默认会初始化执行环境**
+  
   - 默认安装版本**node版本v21.6.2**，**npm版本10.5.0**，在bigprime-ui项目pom.xml中可进行修改
 - **启动前端服务：**
   ```shell
@@ -132,7 +133,7 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
 #### 集成配置
 - **seatunnel 配置**
   - **env 配置支持配置全局参数，如：rest_api、job.name、event_url、job.mode、parallelism等。**
-  ![img_5.png](img/img_5.png)	
+  	![img_5.png](img/img_5.png)	
   ![img_6.png](img/img_6.png)
   - **source 配置支持自定义，如Jdbc、FakeSource等，对应的自定义配置项支持动态参数，如：url、username、password、table_path、query等。**
   ![img_7.png](img/img_7.png)
@@ -186,7 +187,7 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
 ## 联系我们
 - **欢迎您加入社区交流分享**
   - **微信交流群**
-  <img style="margin: 20px 20px 20px 0;" src="img/us.png" width="300" height="300"/>
+  <img style="margin: 20px 20px 20px 0;" src="img/us.jpg" width="300" height="300"/>
 
   - **QQ交流群：加群备注：Bigprime Data Integration**
   <img style="margin: 20px 20px 20px 0;" src="img/qq.png" width="300" height="300"/>
