@@ -189,5 +189,5 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
   - **微信交流群**
   <img style="margin: 20px 20px 20px 0;" src="img/us.png" width="300" height="300"/>
 
-  - **QQ交流群：加群备注：Bigprime Data Integration**
+  - **QQ交流群：**
   <img style="margin: 20px 20px 20px 0;" src="img/qq.png" width="300" height="300"/>
