@@ -10,9 +10,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ChartLine as TinyChartLine } from '@opentiny/vue'
 import { isEmpty } from 'lodash-es'
 
+import { ChartLine as TinyChartLine } from '@opentiny/vue'
 const data = defineModel('data', { default: [] })
 const title = defineModel('title', {default: ''})
 const options = ref({

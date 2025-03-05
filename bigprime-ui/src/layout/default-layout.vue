@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <tiny-container :aside-width="250" :pattern="myPattern">
+    <tiny-container :aside-width="250">
       <template #header>
         <tiny-layout>
           <div class="layout-navbar">
@@ -18,17 +18,7 @@
       <tiny-layout class="layout-content">
         <PageLayout />
       </tiny-layout>
-<!--      <template #footer>
-        <tiny-layout>
-          <div class="layout-footer">
-            <Footer />
-          </div>
-        </tiny-layout>
-      </template>-->
     </tiny-container>
-<!--    <div class="theme-box" @click="themeVisible">
-      <img src="@/assets/images/theme.png" />
-    </div>-->
     <div v-if="disTheme">
       <tiny-modal
         v-model="disTheme"

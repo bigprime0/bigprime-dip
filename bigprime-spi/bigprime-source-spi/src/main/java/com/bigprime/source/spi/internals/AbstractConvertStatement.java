@@ -4,7 +4,6 @@ import com.bigprime.source.spi.model.ConvertConfig;
 import com.bigprime.source.spi.model.SafeAppendable;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

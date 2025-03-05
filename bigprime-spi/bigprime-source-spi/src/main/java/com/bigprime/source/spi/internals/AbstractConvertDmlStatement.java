@@ -34,6 +34,18 @@ public abstract class AbstractConvertDmlStatement extends AbstractConvertStateme
             case SELECT_STATEMENT:
                 selectStatementBuild(builder);
                 break;
+            case INSERT_STATEMENT:
+                insertStatementBuild(builder);
+                break;
+            case UPDATE_STATEMENT:
+                updateStatementBuild(builder);
+                break;
+            case DELETE_STATEMENT:
+                deleteStatementBuild(builder);
+                break;
+            case TRUNCATE_STATEMENT:
+                truncateStatementBuild(builder);
+                break;
             default:
                 break;
         }
@@ -58,6 +70,42 @@ public abstract class AbstractConvertDmlStatement extends AbstractConvertStateme
             sqlClause(builder, "ORDER BY", applyOrderByColumns(), "", "", ", ");
         }
         rowsStrategyClause(builder, config.getOffset(), config.getLimit());
+        builder.append(";");
+    }
+
+    protected void insertStatementBuild(SafeAppendable builder) {
+        List<String> columns = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+        config.getColumns()
+                .forEach(column -> {
+                    columns.add(column.getColumn());
+                    values.add(column.getValue());
+                });
+        sqlClause(builder, "INSERT INTO", Arrays.asList(applyDatabaseAndTable()), "", "", "");
+        sqlClause(builder, "", columns, "(", ")", ", ");
+        sqlClause(builder, "VALUES", values, "(", ")", ", ");
+        builder.append(";");
+    }
+
+    protected void updateStatementBuild(SafeAppendable builder) {
+        sqlClause(builder, "UPDATE", Arrays.asList(applyDatabaseAndTable()), "", "", "");
+        sqlClause(builder, "SET", applyUpdateColumns(), "", "", ", ");
+        if (config.getWhere() != null) {
+            sqlClause(builder, "WHERE", applyUpdateWhere(), "(", ")", " AND ");
+        }
+        builder.append(";");
+    }
+
+    protected void deleteStatementBuild(SafeAppendable builder) {
+        sqlClause(builder, "DELETE FROM", Arrays.asList(applyDatabaseAndTable()), "", "", "");
+        if (config.getWhere() != null) {
+            sqlClause(builder, "WHERE", applyUpdateWhere(), "(", ")", " AND ");
+        }
+        builder.append(";");
+    }
+
+    protected void truncateStatementBuild(SafeAppendable builder) {
+        sqlClause(builder, "TRUNCATE TABLE", Arrays.asList(applyDatabaseAndTable()), "", "", "");
         builder.append(";");
     }
 
@@ -101,6 +149,20 @@ public abstract class AbstractConvertDmlStatement extends AbstractConvertStateme
                     }
                     return String.format("`%s` %s '%s'", column.getColumn(), column.getOperator().getSymbol(), value).replace("`", getKeywordSymbol());
                 }).collect(Collectors.joining());
+    }
+
+    protected List<String> applyUpdateColumns() {
+        return config.getColumns()
+                .stream()
+                .map(column -> String.format("`%s` = '%s'", column.getColumn(), column.getValue()).replace("`", getKeywordSymbol()))
+                .collect(Collectors.toList());
+    }
+
+    protected List<String> applyUpdateWhere() {
+        return config.getWhere()
+                .stream()
+                .map(column -> String.format("`%s` %s '%s'", column.getColumn(), column.getOperator().getSymbol(), column.getValue()).replace("`", getKeywordSymbol()))
+                .collect(Collectors.toList());
     }
 
 }

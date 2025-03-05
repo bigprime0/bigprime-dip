@@ -1,8 +1,8 @@
 package com.bigprime.source.spi.interfaces.impl;
 
 import com.bigprime.source.spi.interfaces.IAdapter;
-import com.bigprime.source.spi.internals.AbstractConnection;
 import com.bigprime.source.spi.internals.AbstractColumn;
+import com.bigprime.source.spi.internals.AbstractConnection;
 import com.bigprime.source.spi.model.Response;
 import lombok.extern.slf4j.Slf4j;
 

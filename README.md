@@ -51,6 +51,14 @@ Data Integration Platform 是 Bigprime DGP 大数据治理平台中的一个核�
 
 ![img_3.png](img/img3.png)
 
+![img.png](img/img_dwm_1.png)
+
+![img_1.png](img/img_dwm_2.png)
+
+![img_2.png](img/img_dwm_3.png)
+
+![img_3.png](img/img_dwm_4.png)
+
 ![img_4.png](img/img4.png)
 
 ![img_5.png](img/img5.png)
@@ -103,7 +111,6 @@ Data Integration Platform 是 Bigprime DGP 大数据治理平台中的一个核�
   ```shell
   npm run dev
   ```
-
 ### 数据源管理
 #### 数据源维护
 - **新增数据源**
@@ -129,7 +136,25 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
 - **可视化查询**
 可视化即席查询，点击选中表名，即可进入可视化查询页面，可根据字段条件进行查询。
 ![img_3.png](img/img_3.png)
+
+### 数据仓库
+- 数据仓库模块提供了数仓分层、建模、即席查询和SQL执行等功能，为用户提供了高效、灵活的数据存储和处理环境。通过数仓分层，用户可以清晰地划分数据层级，提高数据管理的效率和安全性。同时，即席查询和SQL执行功能使得用户能够随时访问和处理数据，满足实时分析的需求。
+
+#### 数仓建模
+![img_dwm1.png](img/img_dwm_1.png)
+
+#### 数仓查询
+![img_dwm2.png](img/img_dwm_2.png)
+
+#### 数仓结构
+![img_dwm3.png](img/img_dwm_3.png)
+
+#### SQL执行
+![img_dwm4.png](img/img_dwm_4.png)
+
 ### 数据集成
+- 数据集成模块支持Seatunnel和Addax等开源数据集成工具，并允许用户自定义集成配置。这意味着用户可以根据自己的需求，快速、灵活地配置数据集成任务，实现不同数据源之间的数据同步和传输。此外，Bigprime DGP还支持用户自定义插件集成配置，进一步扩展了数据集成的功能。
+
 #### 集成配置
 - **seatunnel 配置**
   - **env 配置支持配置全局参数，如：rest_api、job.name、event_url、job.mode、parallelism等。**
@@ -169,7 +194,10 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
 - **任务实例日志详情**
 ![img_19.png](img/img_19.png)
 
+
 ### 系统管理
+- 系统管理模块是Bigprime DGP的基础配置和管理中心，主要包括组织、角色、人员、菜单和基础配置（如文件存储）等功能。通过系统管理模块，用户可以轻松地进行用户管理和权限分配，确保平台的安全性和稳定性。同时，基础配置功能使得用户能够灵活配置平台的存储和文件管理等参数，满足不同的业务需求。
+
 #### 组织管理
 - **支持创建、编辑、删除组织，支持配置组织角色。**
 ![img_20.png](img/img_20.png)
@@ -183,8 +211,7 @@ SQL语句即席查询，点击选中数据库名，即可进入SQL查询页面�
 - **支持创建、编辑、删除菜单，支持配置菜单权限。**
 ![img_23.png](img/img_23.png)
 
-
-## 联系我们
+## 欢迎交流
 - **欢迎您加入社区交流分享**
   - **微信交流群**
   <img style="margin: 20px 20px 20px 0;" src="img/us.png" width="300" height="300"/>

@@ -16,10 +16,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -38,6 +35,10 @@ public class SourcePlugin extends AbstractPlugin<SourcePlugin, Source> {
     @Override
     public Source plugin() {
         return SourceLoader.getInstance().getSource(sourceConfig.getProtocol(), sourceConfig.getType());
+    }
+
+    public Boolean supportDataWarehouse() {
+        return SourceLoader.getInstance().supportDataWarehouse(sourceConfig.getProtocol(), sourceConfig.getType());
     }
 
     public ConcurrentMap<String, Map<String, List<CommandModel>>> getPluginSupport() {
@@ -88,14 +89,52 @@ public class SourcePlugin extends AbstractPlugin<SourcePlugin, Source> {
     }
 
     @EnableAspect
+    public Response execute(ConvertDmlConfig dmlConfig, Long cryptoId, List<String> cryptoColumns) {
+        Response response = handleExecute(dmlConfig);
+        return response;
+    }
+
+    @EnableAspect
+    public Response execute(ConvertDmlConfig dmlConfig, Map<String, Long> securityMaps) {
+        Response response = handleExecute(dmlConfig);
+        return response;
+    }
+
+    @EnableAspect
     public Response execute(String sql) {
         return handleExecute(sql);
     }
 
     @EnableAspect
-    public List<TableModel> getTables() {
+    public List<DbModel> getDatabases() {
+        Response response = handleExecute(DdlStatementType.GET_DB_STATEMENT);
+        return getModels(response, DbModel.class);
+    }
+
+    @EnableAspect
+    public List<TableModel> getTables(boolean isCascade) {
         Response response = handleExecute(DdlStatementType.GET_TABLE_STATEMENT);
         List<TableModel> tables = getModels(response, TableModel.class);
+        if (tables != null && tables.size() > 0 && isCascade) {
+            Map<String, List<ColumnModel>> columnMaps = new HashMap<>();
+            Map<String, List<IndexModel>> indexMaps = new HashMap<>();
+            List<ColumnModel> columns = getColumns();
+            if (columns != null && columns.size() > 0) {
+                columnMaps = columns.stream().collect(Collectors.groupingBy(ColumnModel::getTableName));
+            }
+            List<IndexModel> indexes = getIndexes();
+            if (indexes != null && indexes.size() > 0) {
+                indexMaps = indexes.stream().collect(Collectors.groupingBy(IndexModel::getTableName));
+            }
+            for (TableModel table : tables) {
+                if (columnMaps.containsKey(table.getName())) {
+                    table.setColumns(columnMaps.get(table.getName()));
+                }
+                if (indexMaps.containsKey(table.getName())) {
+                    table.setIndexes(indexMaps.get(table.getName()));
+                }
+            }
+        }
         return tables;
     }
 
@@ -105,8 +144,85 @@ public class SourcePlugin extends AbstractPlugin<SourcePlugin, Source> {
         TableModel model = getModel(response, TableModel.class);
         if (model != null) {
             model.setColumns(getColumns(model.getName()));
+            model.setIndexes(getIndexes(model.getName()));
         }
         return model;
+    }
+
+    @EnableAspect
+    public List<ViewModel> getViews() {
+        Response response = handleExecute(DdlStatementType.GET_VIEW_STATEMENT);
+        return getModels(response, ViewModel.class);
+    }
+
+    @EnableAspect
+    public ViewModel getView(String viewName) {
+        Response response = handleExecute(DdlStatementType.GET_VIEW_STATEMENT, viewName);
+        return getModel(response, ViewModel.class);
+    }
+
+    @EnableAspect
+    public List<FunctionModel> getFunctions() {
+        Response response = handleExecute(DdlStatementType.GET_FUNCTION_STATEMENT);
+        return getModels(response, FunctionModel.class);
+    }
+
+    @EnableAspect
+    public FunctionModel getFunction(String functionName) {
+        Response response = handleExecute(DdlStatementType.GET_FUNCTION_STATEMENT, functionName);
+        return getModel(response, FunctionModel.class);
+    }
+
+    @EnableAspect
+    public String getCreateStatement(String tableName) {
+        Response response = handleExecute(DdlStatementType.SHOW_CREATE_TABLE_STATEMENT, tableName);
+        if(!response.getColumns().isEmpty()){
+            JSONObject applyResponse = response.getColumns().get(0);
+            Set<String> keys = applyResponse.keySet();
+            for (String key : keys){
+                String value = applyResponse.getStr(key);
+                if(value.toLowerCase().indexOf("create") != - 1){
+                    return value;
+                }
+            }
+        }
+        return "";
+    }
+
+    @EnableAspect
+    public Response createTable(TableModel model) {
+        return handleExecute(DdlStatementType.CREATE_TABLE_STATEMENT, model.getName(), model.getComment(), model.getColumns());
+    }
+
+    @EnableAspect
+    public Response alterTable(TableModel model) {
+        return handleExecute(DdlStatementType.ALTER_TABLE_STATEMENT, model.getName(), model.getComment());
+    }
+
+    @EnableAspect
+    public Response dropTable(String tableName) {
+        return handleExecute(DdlStatementType.DROP_TABLE_STATEMENT, tableName);
+    }
+
+    @EnableAspect
+    public Response createColumn(String tableName, ColumnModel columnModel) {
+        return handleExecute(DdlStatementType.CREATE_COLUMN_STATEMENT, tableName, Arrays.asList(columnModel));
+    }
+
+    @EnableAspect
+    public Response alterColumn(String tableName, ColumnModel columnModel) {
+        return handleExecute(DdlStatementType.ALTER_COLUMN_STATEMENT, tableName, Arrays.asList(columnModel));
+    }
+
+    @EnableAspect
+    public Response dropColumn(String tableName, String columnName) {
+        return handleExecute(DdlStatementType.DROP_COLUMN_STATEMENT, tableName, Arrays.asList(ColumnModel.builder().column(columnName).build()));
+    }
+
+
+    private List<ColumnModel> getColumns() {
+        Response response = handleExecute(DdlStatementType.GET_COLUMN_STATEMENT);
+        return convertColumns(getModels(response, ColumnModel.class));
     }
 
     private List<ColumnModel> getColumns(String tableName) {
@@ -115,14 +231,57 @@ public class SourcePlugin extends AbstractPlugin<SourcePlugin, Source> {
     }
 
     private List<ColumnModel> convertColumns(List<ColumnModel> models) {
-        if (!models.isEmpty()) {
+        if(!models.isEmpty()){
             models.forEach(model -> {
-                if (model.getPrecision() == null) {
+                if(model.getPrecision() == null){
                     model.setPrecision(model.getMaximumLength());
                 }
             });
         }
         return models;
+    }
+
+    private List<IndexModel> getIndexes() {
+        return getIndexes(null);
+    }
+
+    private List<IndexModel> getIndexes(String tableName) {
+        Response response = handleExecute(DdlStatementType.GET_INDEX_STATEMENT, tableName);
+        return convertIndexes(response);
+    }
+
+    private List<IndexModel> convertIndexes(Response response) {
+        List<IndexModel> indexes = getModels(response, IndexModel.class);
+        if (indexes == null) {
+            indexes = new ArrayList<>();
+        } else {
+            return indexes.stream()
+                    .collect(Collectors.groupingBy(
+                            o -> Arrays.asList(o.getTableName(), o.getIndexName()),
+                            Collectors.collectingAndThen(
+                                    Collectors.toList(),
+                                    (list) -> {
+                                        list.sort(Comparator.comparing(IndexModel::getSeqIndex, Comparator.nullsLast(Long::compareTo)));
+
+                                        String newColumnName = list.stream()
+                                                .map(IndexModel::getColumnName)
+                                                .collect(Collectors.joining(", "));
+
+                                        return IndexModel.builder()
+                                                .tableName(list.get(0).getTableName())
+                                                .indexName(list.get(0).getIndexName())
+                                                .columnName(newColumnName)
+                                                .indexType(list.get(0).getIndexType())
+                                                .indexComment(list.get(0).getIndexComment())
+                                                .nonUnique(list.get(0).getNonUnique())
+                                                .seqIndex(list.get(0).getSeqIndex())
+                                                .property(list.get(0).getProperty())
+                                                .build();
+                                    }
+                            )
+                    )).values().stream().collect(Collectors.toList());
+        }
+        return indexes;
     }
 
     private Response handleExecute(String sql) {
@@ -180,6 +339,14 @@ public class SourcePlugin extends AbstractPlugin<SourcePlugin, Source> {
 
     private Response handleExecute(DdlStatementType type, String tableName) {
         return handleExecute(type, tableName, null, null);
+    }
+
+    private Response handleExecute(DdlStatementType type, String tableName, String tableComment) {
+        return handleExecute(type, tableName, tableComment, null);
+    }
+
+    private Response handleExecute(DdlStatementType type, String tableName, List<ColumnModel> columns) {
+        return handleExecute(type, tableName, null, columns);
     }
 
     private Response handleExecute(DdlStatementType type, String tableName, String tableComment, List<ColumnModel> columns) {

@@ -1,4 +1,6 @@
 import request from '@/utils/request'
+import { includes, isEmpty, split } from 'lodash-es'
+import { ref } from 'vue'
 
 export interface SourceParam {
     description: string,
@@ -115,22 +117,37 @@ export interface DmlConfig {
 }
 
 export enum DmlType {
-    select = 'SELECT_STATEMENT'
+    select = 'SELECT_STATEMENT',
+    insert = 'INSERT_STATEMENT',
+    update = 'UPDATE_STATEMENT',
+    delete = 'DELETE_STATEMENT',
+    truncate = 'TRUNCATE_STATEMENT'
 }
 
-
+export const columnType = [
+    'varchar',
+    'bigint',
+    'int',
+    'date',
+    'tinyint',
+    'double',
+    'smallint',
+    'decimal',
+    'time',
+    'timestamp'
+]
 
 export const operatorData = [
-    {value: 'EQ', label: '='},
-    {value: 'NEQ', label: '<>'},
-    {value: 'GT', label: '>'},
-    {value: 'GTE', label: '>='},
-    {value: 'LT', label: '<'},
-    {value: 'LTE', label: '<='},
-    {value: 'LIKE', label: 'LIKE'},
-    {value: 'NLIKE', label: 'NOT LIKE'},
-    {value: 'NULL', label: 'IS NULL'},
-    {value: 'NNULL', label: 'IS NOT NULL'}
+    { value: 'EQ', label: '=' },
+    { value: 'NEQ', label: '<>' },
+    { value: 'GT', label: '>' },
+    { value: 'GTE', label: '>=' },
+    { value: 'LT', label: '<' },
+    { value: 'LTE', label: '<=' },
+    { value: 'LIKE', label: 'LIKE' },
+    { value: 'NLIKE', label: 'NOT LIKE' },
+    { value: 'NULL', label: 'IS NULL' },
+    { value: 'NNULL', label: 'IS NOT NULL' }
 ]
 /**
  * 源管理
@@ -157,13 +174,68 @@ export namespace SourceService {
         return result.data as boolean
     }
 
+    export const getTables = async (id: any, isCascade:Boolean) => {
+        return executeDdl({ type: 'getTables', databaseId: id, isCascade: isCascade })
+    }
+
     export const getTable = async (id: number, tableName: string) => {
-        const result = await request.get('/bigprime-data/source/get-table/' + id + '/' + tableName)
-        return result.data
+        return executeDdl({ type: 'getTable', databaseId: id, name: tableName })
     }
 
     export const execute = async (data: any) => {
         const result = await request.post('/bigprime-data/source/execute', data)
         return result.data as ResponseParam
+    }
+
+    export const getDatabases = async (id: any) => {
+        return executeDdl({ type: 'getDatabases', databaseId: id })
+    }
+
+    export const getCreateStatement = async (id: any, tableName: string) => {
+        return executeDdl({ type: 'getCreateStatement', databaseId: id, name: tableName })
+    }
+
+    export const getViews = async (id: any) => {
+        return executeDdl({ type: 'getViews', databaseId: id })
+    }
+
+    export const getView = async (id: any, viewName: string) => {
+        return executeDdl({ type: 'getView', databaseId: id, name: viewName })
+    }
+
+    export const getFunctions = async (id: any) => {
+        return executeDdl({ type: 'getFunctions', databaseId: id })
+    }
+
+    export const getFunction = async (id: any, functionName: string) => {
+        return executeDdl({ type: 'getFunction', databaseId: id, name: functionName })
+    }
+
+    export const createTable = async (id: any, tableModel: {}) => {
+        return executeDdl({ type: 'createTable', databaseId: id, model: tableModel })
+    }
+
+    export const alterTable = async (id: any, tableModel: {}) => {
+        return executeDdl({ type: 'alterTable', databaseId: id, model: tableModel })
+    }
+
+    export const createColumn = async (id: any, tableName: string, columnModel: {}) => {
+        return executeDdl({ type: 'createColumn', databaseId: id, name: tableName, columnModel: columnModel })
+    }
+
+    export const alterColumn = async (id: any, tableName: string, columnModel: {}) => {
+        return executeDdl({ type: 'alterColumn', databaseId: id, name: tableName, columnModel: columnModel })
+    }
+
+    export const dropTable = async (id: any, tableName: string) => {
+        return executeDdl({ type: 'dropTable', databaseId: id, name: tableName })
+    }
+    export const dropColumn = async (id: any, tableName: string, columnName: string) => {
+        return executeDdl({ type: 'dropColumn', databaseId: id, name: tableName, columnName:columnName })
+    }
+
+    export const executeDdl = async (data: any) => {
+        const result = await request.post('/bigprime-data/source/execute-ddl', data)
+        return result.data
     }
 }

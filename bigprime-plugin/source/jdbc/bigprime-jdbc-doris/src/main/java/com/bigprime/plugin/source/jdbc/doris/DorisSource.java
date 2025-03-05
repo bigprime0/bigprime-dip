@@ -15,6 +15,11 @@ public class DorisSource
     }
 
     @Override
+    public Boolean supportDataWarehouse() {
+        return true;
+    }
+
+    @Override
     public String driver() {
         return "com.mysql.cj.jdbc.Driver";
     }

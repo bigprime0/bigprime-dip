@@ -3,9 +3,7 @@ package com.bigprime.source.spi.model;
 import cn.hutool.json.JSONObject;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder

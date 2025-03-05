@@ -210,5 +210,12 @@ export default {
   //Data Source Management
   'menu.dsm': '数据源管理',
   'menu.dsm.dsm-maintenance': '数据源维护',
-  'menu.dsm.dsm-query': '数据源查询'
+  'menu.dsm.dsm-query': '数据源查询',
+
+  //Data Warehouse Management
+  'menu.dwm': '数仓管理',
+  'menu.dwm.dwm-modeling': '数仓建模',
+  'menu.dwm.dwm-query': '数仓查询',
+  'menu.dwm.dwm-structure': '数仓结构',
+  'menu.dwm.dwm-sql-execution': 'SQL执行',
 }

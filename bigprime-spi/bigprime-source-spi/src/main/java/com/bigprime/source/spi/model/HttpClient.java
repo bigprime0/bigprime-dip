@@ -2,8 +2,8 @@ package com.bigprime.source.spi.model;
 
 import com.bigprime.source.spi.constant.HttpMethodType;
 import com.bigprime.source.spi.internals.impl.HttpConnection;
-import okhttp3.*;
 import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;

@@ -1,7 +1,6 @@
 package com.bigprime.service.spi;
 
 import cn.hutool.core.util.StrUtil;
-import com.bigprime.common.config.NacosConfig;
 import com.bigprime.common.constant.MetaEnum;
 import com.bigprime.common.utils.DozerUtils;
 import com.bigprime.handler.database.DataBaseHandler;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +33,6 @@ import java.util.stream.Collectors;
 public class SourceService {
     private final DataBaseHandler baseHandler;
     private final DataSourceService dataSourceService;
-    private final NacosConfig config;
 
     /**
      * 获取支持的插件
@@ -54,7 +51,7 @@ public class SourceService {
      */
     public Boolean testConnection(DataDatabaseVO vo) {
         boolean active = Plugin.<SourcePlugin>getPlugin(PluginType.SOURCE).testConnection(vo.getSource());
-        ;
+
         if (vo.getId() > 0 && vo.getActive() != active) {
             vo.setActive(active);
             try {
@@ -103,7 +100,7 @@ public class SourceService {
     public List<SourceTreeVO> getSourceTree(Long id) {
         List<SourceTreeVO> baseModels = new ArrayList<>();
         DataDatabaseModel model = baseHandler.getById(id);
-        List<TableModel> tableModels = Plugin.<SourcePlugin>getInstance(PluginType.SOURCE, id).getTables();
+        List<TableModel> tableModels = Plugin.<SourcePlugin>getInstance(PluginType.SOURCE, id).getTables(false);
         baseModels.add(SourceTreeVO.builder()
                 .type(MetaEnum.DATABASE.toString())
                 .name(model.getName())
@@ -119,7 +116,7 @@ public class SourceService {
      * @return
      */
     public List<TableModel> getTables(Long id) {
-        return Plugin.<SourcePlugin>getInstance(PluginType.SOURCE, id).getTables();
+        return Plugin.<SourcePlugin>getInstance(PluginType.SOURCE, id).getTables(false);
     }
 
     /**
@@ -144,27 +141,10 @@ public class SourceService {
         if (StrUtil.isNotBlank(query.getSql())) {
             return plugin.execute(query.getSql());
         }
-        return plugin.execute(query.getDmlConfig());
+        return plugin.execute(query.getDmlConfig(), query.getCryptoId(), query.getCryptoColumns());
     }
 
     public void detectingSources() {
-        List<DataDatabaseVO> list = DozerUtils.mapList(baseHandler.getList(""), DataDatabaseVO.class);
-        list.forEach(vo -> {
-            try {
-                dataSourceService.save(vo);
-            } catch (Exception e) {
-                log.warn("Fail detectingSources", e.getMessage());
-            }
-        });
-    }
-
-    @PostConstruct
-    public void initSourceInjector() {
-        detectingSources();
-        try {
-            baseHandler.registerSource(config.getDataBaseModel());
-        } catch (Exception e) {
-            log.warn("Fail initSourceInjector", e.getMessage());
-        }
+        baseHandler.detectingSources();
     }
 }

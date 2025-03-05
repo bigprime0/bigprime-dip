@@ -20,4 +20,7 @@ public class ConvertDdlConfig extends ConvertConfig {
     private DdlStatementType type;
     private String tableComment;
     private List<ColumnModel> columns;
+    private List<IndexModel> indexes;
+    private ViewModel viewModel;
+    private FunctionModel functionModel;
 }

@@ -42,6 +42,10 @@ public interface Source {
         return new DefaultSourceCommand();
     }
 
+    default Boolean supportDataWarehouse() {
+        return false;
+    }
+
     default String convertStatement(ConvertDdlConfig config) {
         return new DefaultConvertDdlStatement(config).execute();
     }

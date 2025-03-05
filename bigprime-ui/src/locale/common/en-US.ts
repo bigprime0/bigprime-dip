@@ -210,5 +210,12 @@ export default {
   //Data Source Management
   'menu.dsm': 'Data Source Management',
   'menu.dsm.dsm-maintenance': 'Data Source  Maintenance',
-  'menu.dsm.dsm-query': 'Data Source Query'
+  'menu.dsm.dsm-query': 'Data Source Query',
+
+  //Data Warehouse Management
+  'menu.dwm': 'Data Warehouse Management',
+  'menu.dwm.dwm-modeling': 'Data Warehouse Modeling',
+  'menu.dwm.dwm-query': 'Data Warehouse Query',
+  'menu.dwm.dwm-structure': 'Data Warehouse Structure',
+  'menu.dwm.dwm-sql-execution': 'SQL Execution',
 }

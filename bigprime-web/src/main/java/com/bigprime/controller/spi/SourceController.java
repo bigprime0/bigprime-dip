@@ -2,6 +2,7 @@ package com.bigprime.controller.spi;
 
 import com.bigprime.common.base.Result;
 import com.bigprime.query.datahouse.DataSourceQuery;
+import com.bigprime.query.spi.SourceDdlQuery;
 import com.bigprime.query.spi.SourceQuery;
 import com.bigprime.service.spi.SourceService;
 import com.bigprime.source.spi.model.Response;
@@ -18,7 +19,6 @@ import java.util.List;
 
 /**
  * 源管理
- *
  * @author lyw
  * @version 1.0
  */
@@ -31,7 +31,6 @@ public class SourceController {
 
     /**
      * 获取支持的插件
-     *
      * @return
      */
     @GetMapping("/get-plugin")
@@ -55,7 +54,6 @@ public class SourceController {
 
     /**
      * 测试连接
-     *
      * @param model
      * @return
      */
@@ -81,5 +79,11 @@ public class SourceController {
     @Operation(summary = "获取数据")
     public Result<Response> execute(@RequestBody SourceQuery query) {
         return Result.ok(sourceService.execute(query));
+    }
+
+    @PostMapping("/execute-ddl")
+    @Operation(summary = "执行ddl操作")
+    public Result<Object> executeDdl(@RequestBody SourceDdlQuery query){
+        return Result.ok(query.getType().execute(query));
     }
 }

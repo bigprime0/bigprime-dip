@@ -30,7 +30,7 @@
                 <version>1.12.0</version>
                 <configuration>
                     <nodeVersion>v21.6.2</nodeVersion>
-                    <npmVersion>10.5.0</npmVersion>
+                    <npmVersion>10.2.4</npmVersion>
                     <nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>
                 </configuration>
                 <executions>

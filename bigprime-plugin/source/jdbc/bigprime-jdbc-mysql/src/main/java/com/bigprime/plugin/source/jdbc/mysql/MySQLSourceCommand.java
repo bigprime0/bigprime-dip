@@ -1,8 +1,8 @@
 package com.bigprime.plugin.source.jdbc.mysql;
 
 import com.bigprime.source.spi.interfaces.ISourceCommand;
-import com.bigprime.source.spi.model.CommandModel;
 import com.bigprime.source.spi.model.CommandCustomModel;
+import com.bigprime.source.spi.model.CommandModel;
 
 import java.util.ArrayList;
 import java.util.List;

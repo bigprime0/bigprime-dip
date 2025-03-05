@@ -21,7 +21,6 @@ public class JdbcColumn
     public Object mappingColumnData(String columnType, Integer columnIndex)
             throws SQLException
     {
-        // Obtain the value of the corresponding type based on the data returned in the query result
         if (columnType.equalsIgnoreCase(JdbcColumnType.INTEGER.name())
                 || columnType.equalsIgnoreCase(JdbcColumnType.INT.name())) {
             return resultSet.getInt(columnIndex);
@@ -72,7 +71,6 @@ public class JdbcColumn
     public String mappingColumnType(String columnName)
             throws SQLException
     {
-        // Obtain the value of the corresponding type based on the data returned in the query result
         if (columnName.equalsIgnoreCase(JdbcColumnType.INTEGER.name())
                 || columnName.equalsIgnoreCase(JdbcColumnType.INT.name())) {
             return Integer.class.getSimpleName();

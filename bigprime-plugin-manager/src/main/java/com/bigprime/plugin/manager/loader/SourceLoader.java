@@ -18,6 +18,8 @@ public class SourceLoader {
 
     private ConcurrentMap<String, Map<String,List<CommandModel>>> pluginSupport = new ConcurrentHashMap<>();
 
+    private List<String> supportDataWarehouses = new ArrayList<>();
+
     private ConcurrentMap<String, Source> sourceMap = new ConcurrentHashMap<>();
 
     private static class SourceLoaderHolder{
@@ -38,7 +40,12 @@ public class SourceLoader {
             }
             pluginSupport.get(protocol).put(name, getSourceCommand(source.sourceCommand()));
 
-            sourceMap.put(String.format("%s-%s", protocol, name), source);
+            String key = String.format("%s-%s", protocol, name);
+            if(source.supportDataWarehouse()){
+                supportDataWarehouses.add(key);
+            }
+
+            sourceMap.put(key, source);
         }
     }
 
@@ -81,6 +88,9 @@ public class SourceLoader {
 
     public ConcurrentMap<String,Map<String,List<CommandModel>>> pluginSupport(){
         return pluginSupport;
+    }
+    public Boolean supportDataWarehouse(String protocol, String name){
+        return supportDataWarehouses.contains(String.format("%s-%s", protocol, name));
     }
 
     public Source getSource(String protocol, String name){

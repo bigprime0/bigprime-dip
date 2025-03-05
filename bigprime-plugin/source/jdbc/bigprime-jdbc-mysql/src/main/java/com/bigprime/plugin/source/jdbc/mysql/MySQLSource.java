@@ -14,6 +14,11 @@ public class MySQLSource
     }
 
     @Override
+    public Boolean supportDataWarehouse() {
+        return true;
+    }
+
+    @Override
     public String driver() {
         return "com.mysql.jdbc.Driver";
     }

@@ -73,7 +73,7 @@ public class CurrencyService {
             try {
                 if (model.getActive() == 1) {
                     SourcePlugin plugin = Plugin.getInstance(PluginType.SOURCE, model.getId());
-                    List<TableModel> tableModels = plugin.getTables();
+                    List<TableModel> tableModels = plugin.getTables(false);
                     SourceStatisticVO vo = SourceStatisticVO.builder()
                             .name(model.getName())
                             .sourceType(model.getProduct())

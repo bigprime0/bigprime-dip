@@ -2,22 +2,28 @@ package com.bigprime.handler.database;
 
 import cn.hutool.json.JSONUtil;
 import com.bigprime.common.config.NacosConfig;
+import com.bigprime.common.constant.DataBaseEnum;
+import com.bigprime.common.exception.ServerException;
 import com.bigprime.handler.database.model.DataDatabaseModel;
 import com.bigprime.plugin.manager.Plugin;
 import com.bigprime.plugin.manager.constant.PluginType;
 import com.bigprime.plugin.manager.internals.impl.SourcePlugin;
 import com.bigprime.plugin.manager.model.PluginModel;
 import com.bigprime.source.spi.model.SourceConfig;
+import com.easy.query.api.proxy.base.StringProxy;
 import com.easy.query.api.proxy.client.EasyEntityQuery;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
  * @author lyw
  * @version 1.0
  */
+@Slf4j
 @Component
 @AllArgsConstructor
 public class DataBaseHandler {
@@ -67,6 +73,20 @@ public class DataBaseHandler {
      */
     public List<DataDatabaseModel> getByTypes(List<String> types) {
         return query.queryable(DataDatabaseModel.class).where(o -> o.product().in(types)).toList();
+    }
+
+    /**
+     * 根据数据库ID获取数据库类型
+     *
+     * @param id
+     * @return
+     */
+    public DataBaseEnum getDataBaseEnumById(Long id) {
+        String product = query.queryable(DataDatabaseModel.class).where(d -> d.id().eq(id)).select(d -> new StringProxy(d.product())).firstOrNull();
+        if (product != null) {
+            return DataBaseEnum.getByProduct(product);
+        }
+        return DataBaseEnum.UNKNOWN;
     }
 
     /**
@@ -131,6 +151,41 @@ public class DataBaseHandler {
 
     public void unregisterSource(Long id) {
         Plugin.unregister(PluginType.SOURCE, id);
+    }
+
+    public void detectingSources() {
+        List<DataDatabaseModel> list = getList("");
+        list.forEach(model -> {
+            try {
+                saveSource(model);
+            } catch (Exception e) {
+                log.warn("Fail detectingSources", e.getMessage());
+            }
+        });
+    }
+
+    public long saveSource(DataDatabaseModel model) {
+        boolean active = Plugin.<SourcePlugin>getPlugin(PluginType.SOURCE).testConnection(JSONUtil.toBean(model.getConfig(), SourceConfig.class));
+        if (!active) {
+            if (model.getId() > 0 && model.getActive() == 1) {
+                model.setActive(0);
+                save(model);
+            }
+            throw new ServerException("Connection not successful");
+        } else {
+            model.setActive(1);
+            return save(model);
+        }
+    }
+
+    @PostConstruct
+    public void initSourceInjector() {
+        detectingSources();
+        try {
+            registerSource(config.getDataBaseModel());
+        } catch (Exception e) {
+            log.warn("Fail initSourceInjector", e.getMessage());
+        }
     }
 
 }
