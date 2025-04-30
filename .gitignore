@@ -29,5 +29,4 @@ node_modules/
 node/
 resources/static
 dist/
-package-lock.json
 components.d.ts

@@ -29,5 +29,4 @@ coverage
 
 *.tsbuildinfo
 components.d.ts
-package-lock.json
 yarn.lock
